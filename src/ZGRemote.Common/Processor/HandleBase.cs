@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Serilog;
 using ZGRemote.Common.Message;
@@ -10,7 +11,7 @@ namespace ZGRemote.Common.Processor
     public delegate void Excute(UserContext user, IMessage message);
     public abstract class HandleBase<T> : IDisposable where T : HandleBase<T>, new()
     {
-        protected static Dictionary<UserContext, T> _userInstanceTable = new Dictionary<UserContext, T>();
+        protected static ConcurrentDictionary<UserContext, T> _userInstanceTable = new ConcurrentDictionary<UserContext, T>();
         protected bool disposedValue;
 
         public UserContext UserContext { get; set; }
@@ -19,16 +20,29 @@ namespace ZGRemote.Common.Processor
         {
             T userInstance = new T();
             userInstance.UserContext = user;
-            _userInstanceTable.Add(user, userInstance);
-            return userInstance;
+            if(_userInstanceTable.TryAdd(user, userInstance))
+            {
+                return userInstance;
+            }
+            _userInstanceTable.TryGetValue(user, out T instance);
+            return instance;
+
         }
 
         public static void ReleaseInstance(UserContext user)
         {
-            if(_userInstanceTable.TryGetValue(user, out T instance))
+            if(_userInstanceTable.TryRemove(user, out T instance))
             {
-                _userInstanceTable.Remove(user);
                 instance.Dispose();
+            }
+        }
+
+        public virtual void ReleaseInstance()
+        {
+            if(UserContext != null)
+            {
+                _userInstanceTable.TryRemove(UserContext, out _);
+                Dispose();
             }
         }
 
@@ -67,7 +81,7 @@ namespace ZGRemote.Common.Processor
         }
     }
 
-    //标记Handle能处理哪些IMessage
+    //标记Handle能处理哪些Message
     public class CanProcessMessageAttribute : Attribute
     {
         public Type[] CanProcessMessage { get; set; }

@@ -17,6 +17,11 @@ namespace ZGRemote.Common.Processor
         */
         private static Dictionary<Type, Excute> Message2HandleTable;
 
+        static ProcessMessage()
+        {
+            Init();
+        }
+
         /// <summary>
         /// 从socket接收到IMessage调用此方法，可以根据Message2HandleTable把消息传递给能够处理这条消息Handle
         /// </summary>
@@ -31,7 +36,7 @@ namespace ZGRemote.Common.Processor
             action(user, message);
         }
 
-        public static void Init()
+        private static void Init()
         {
             var allType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes());
             
@@ -64,20 +69,11 @@ namespace ZGRemote.Common.Processor
             Message2HandleTable = new Dictionary<Type, Excute>();
             /*  
             扫描所有HandleBase的子类，添加到Message2HandleTable
-            key是CanProcessMessageAttribute.CanProcessMessage的成员
+            key是CanProcessMessageAttribute.CanProcessMessage的值的成员
             vaule是Handlebase子类的静态方法Excute
             */
-            var HandlbaseType = typeof(HandleBase<>);
-            var test = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass);
-            // types 为所有继承了HandleBase<>的子类，由于HandleBase是泛型类所以不能直接使用IsAssignableFrom和IsSubclassOf
-            types = (from type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes())
-                        where type.IsClass && !type.IsAbstract
-                        let baseType = type.BaseType
-                        where baseType != null
-                            && baseType.IsGenericType
-                            && baseType.GetGenericTypeDefinition() == HandlbaseType
-                        select type).ToArray();
-            
+            if(ProcessHandle.HandleList == null) ProcessHandle.Init();
+            types = ProcessHandle.HandleList;
             foreach (var type in types)
             {
                 var attr = type.GetCustomAttribute<CanProcessMessageAttribute>();

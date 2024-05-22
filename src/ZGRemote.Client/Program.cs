@@ -29,7 +29,6 @@ namespace ZGRemote.Client
 
         static void Init()
         {
-            ProcessMessage.Init();
 #if DEBUG
             Logger.Init();
 #endif
@@ -52,7 +51,7 @@ namespace ZGRemote.Client
 
         static void OnConnect(UserContext user)
         {
-            SystemInfoHandle.CreateInstance(user);
+            ProcessHandle.CreateAllHandleInstanceByUserContext(user);
         }
 
         static void OnReceive(UserContext user, byte[] data)

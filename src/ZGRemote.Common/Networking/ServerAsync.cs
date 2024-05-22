@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ZGRemote.Common.Extensions;
 using ZGRemote.Common.Util;
-using ZGRemote.Common.Logging;
 using Serilog;
 
 namespace ZGRemote.Common.Networking
@@ -84,7 +83,7 @@ namespace ZGRemote.Common.Networking
             }
             catch (Exception ex)
             {
-                Log.Warning("listen error", ex);
+                Log.Warning(ex, "listen error");
             }
         }
 
@@ -150,8 +149,14 @@ namespace ZGRemote.Common.Networking
 
             Interlocked.Increment(ref _clientCount);
             lock (_clientList) _clientList.Add(userContext);
-
-            OnConnect?.Invoke(userContext);
+            try
+            {
+                OnConnect?.Invoke(userContext);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "OnConnect Error");
+            }
 
             var pipe = new Pipe();
             Task writing = FillPipeAsync(socket, pipe.Writer);
@@ -177,9 +182,9 @@ namespace ZGRemote.Common.Networking
                     // Tell the PipeWriter how much was read from the Socket.
                     writer.Advance(bytesRead);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Log.Information(ex.Message);
+                    // Log.Information(ex.Message);
                     break;
                 }
 
@@ -261,7 +266,7 @@ namespace ZGRemote.Common.Networking
             }
             catch(Exception ex)
             {
-                Log.Error("ProcessPack Error", ex);
+                Log.Error(ex.ToString());
             }
             
         }
@@ -281,7 +286,14 @@ namespace ZGRemote.Common.Networking
 
         public void CloseClient(UserContext userContext)
         {
-            OnDisConnect?.Invoke(userContext);
+            try
+            {
+                OnDisConnect?.Invoke(userContext);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "OnDisConnect Error");
+            }
             CloseSocket(userContext.Socket);
             lock (_clientList)
             {

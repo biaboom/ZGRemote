@@ -47,7 +47,15 @@ namespace ZGRemote.Common.Networking
                 }
                 UserContext userContext = new UserContext(_socket, _aes.CreateEncryptor(), _aes.CreateDecryptor());
                 userContext.Client = this;
-                OnConnect?.Invoke(userContext);
+                try
+                {
+                    OnConnect?.Invoke(userContext);
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex, "OnConnect Error");
+                }
+                
                 StartReceive(userContext);
                 return true;
             }
@@ -75,7 +83,7 @@ namespace ZGRemote.Common.Networking
             }
             catch (Exception ex)
             {
-                Log.Warning("Authentication fail", ex);
+                Log.Warning(ex, "Authentication fail");
                 return false;
             }
             finally
@@ -98,7 +106,7 @@ namespace ZGRemote.Common.Networking
             }
             catch(Exception ex)
             {
-                Log.Error("StartReceive Error", ex);
+                Log.Error(ex.ToString());
             }
             
         }
@@ -120,9 +128,9 @@ namespace ZGRemote.Common.Networking
                     // Tell the PipeWriter how much was read from the Socket.
                     writer.Advance(bytesRead);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Log.Information(ex.Message);
+                    // Log.Information(ex.Message);
                     break;
                 }
 
@@ -204,7 +212,7 @@ namespace ZGRemote.Common.Networking
             }
             catch (Exception ex)
             {
-                Log.Error("ProcessPack Error", ex);
+                Log.Error(ex.ToString());
             }
         }
 

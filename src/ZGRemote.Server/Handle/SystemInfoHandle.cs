@@ -29,7 +29,7 @@ namespace ZGRemote.Server.Handle
 
         public void GetSystemInfo(Action<UserContext, SystemInfoResponse> CallBack = null)
         {
-            if (CallBack != null) GetSystemInfoResponse += CallBack;
+            if (CallBack != null) GetSystemInfoResponse = CallBack;
             SystemInfoRequest systemInfoRequest = new SystemInfoRequest();
             UserContext.SendPack(ProcessMessage.Pack(systemInfoRequest));
         }

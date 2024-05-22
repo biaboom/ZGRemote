@@ -30,12 +30,12 @@ namespace ZGRemote.Server
 
         static void Init()
         {
-            ProcessMessage.Init();
             Logger.Init();
 
             ServerAsync server = new ServerAsync(Settings.RSACSPBLOB, 512, 1024);
             server.OnConnect += OnConnect;
             server.OnReceive += OnReceive;
+            server.OnDisConnect += OnDisConnect;
             server.Start();
             
         }
@@ -50,6 +50,19 @@ namespace ZGRemote.Server
         {
             SystemInfoHandle handle = SystemInfoHandle.CreateInstance(user);
             handle.GetSystemInfo(SystemInfoCallBack);
+        }
+
+        public static void OnDisConnect(UserContext user)
+        {
+            try
+            {
+                // 断开连接时释放所有handle
+                ProcessHandle.ReleaseAllHandleInstanceByUserContext(user);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+            }
         }
 
         public static void SystemInfoCallBack(UserContext user, SystemInfoResponse message)
