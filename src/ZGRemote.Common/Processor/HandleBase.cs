@@ -16,17 +16,27 @@ namespace ZGRemote.Common.Processor
 
         public UserContext UserContext { get; set; }
 
+        public static T GetOrCreateInstance(UserContext user)
+        {
+            if(_userInstanceTable.TryGetValue(user, out T instance))
+            {
+                return instance;
+            }
+            T userInstance = new T();
+            userInstance.UserContext = user;
+            _userInstanceTable.TryAdd(user, userInstance);
+            return userInstance;
+        }
+
         public static T CreateInstance(UserContext user)
         {
             T userInstance = new T();
             userInstance.UserContext = user;
-            if(_userInstanceTable.TryAdd(user, userInstance))
+            if(!_userInstanceTable.TryAdd(user, userInstance))
             {
-                return userInstance;
+                throw new Exception("CreateInstance failed");
             }
-            _userInstanceTable.TryGetValue(user, out T instance);
-            return instance;
-
+            return userInstance;
         }
 
         public static void ReleaseInstance(UserContext user)
@@ -41,8 +51,7 @@ namespace ZGRemote.Common.Processor
         {
             if(UserContext != null)
             {
-                _userInstanceTable.TryRemove(UserContext, out _);
-                Dispose();
+                ReleaseInstance(UserContext);
             }
         }
 

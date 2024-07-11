@@ -70,7 +70,7 @@ namespace ZGRemote.Common.Processor
             }
         }
 
-        // 创建某个UserContext所有的HandleInstance
+        // 释放某个UserContext所有的HandleInstance，一般在断开连接时使用。
         public static void ReleaseAllHandleInstanceByUserContext(UserContext user)
         {
             if (user != null)
@@ -82,7 +82,7 @@ namespace ZGRemote.Common.Processor
             }
         }
 
-        // 释放某个UserContext所有的HandleInstance，一般在断开连接时使用。
+        // 创建某个UserContext所有的HandleInstance
         public static void CreateAllHandleInstanceByUserContext(UserContext user)
         {
             if (user != null)
