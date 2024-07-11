@@ -33,7 +33,7 @@ namespace ZGRemote.Client
             Logger.Init();
 #endif
 
-            ClientAsync client = new ClientAsync(Settings.RSACSPBLOB);
+            Common.Networking.Client client = new Common.Networking.Client(Settings.RSACSPBLOB);
             client.OnConnect += OnConnect;
             client.OnReceive += OnReceive;
             int i = 0;

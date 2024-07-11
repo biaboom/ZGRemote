@@ -13,7 +13,7 @@ using ZGRemote.Common.Util;
 
 namespace ZGRemote.Common.Networking
 {
-    public class ClientAsync
+    public class Client
     {
         private Socket _socket;
         private RSACryptoServiceProvider _rsa;
@@ -24,7 +24,7 @@ namespace ZGRemote.Common.Networking
 
         public bool Connected { get { return _socket.Connected; } }
 
-        public ClientAsync(byte[] rsaBlobKey)
+        public Client(byte[] rsaBlobKey)
         {
             _rsa = new RSACryptoServiceProvider(2048);
             _rsa.ImportCspBlob(rsaBlobKey);

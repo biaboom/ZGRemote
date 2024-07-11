@@ -32,7 +32,7 @@ namespace ZGRemote.Server
         {
             Logger.Init();
 
-            ServerAsync server = new ServerAsync(Settings.RSACSPBLOB, 512, 1024);
+            Common.Networking.Server server = new Common.Networking.Server(Settings.RSACSPBLOB, 512, 1024);
             server.OnConnect += OnConnect;
             server.OnReceive += OnReceive;
             server.OnDisConnect += OnDisConnect;

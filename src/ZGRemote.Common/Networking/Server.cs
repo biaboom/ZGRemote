@@ -16,7 +16,7 @@ using Serilog;
 
 namespace ZGRemote.Common.Networking
 {
-    public class ServerAsync
+    public class Server
     {
         private Socket _listenSocket;
         private bool _running;
@@ -32,7 +32,7 @@ namespace ZGRemote.Common.Networking
         public event Action<UserContext> OnConnect;
         public event Action<UserContext> OnDisConnect;
 
-        public ServerAsync(byte[] rsaBlobKey, int bufferSize, int maxClient)
+        public Server(byte[] rsaBlobKey, int bufferSize, int maxClient)
         {
             _bufferSize = bufferSize;
             _maxClient = maxClient;
