@@ -22,10 +22,12 @@ namespace ZGRemote.Common.Processor
             {
                 return instance;
             }
-            T userInstance = new T();
-            userInstance.UserContext = user;
-            _userInstanceTable.TryAdd(user, userInstance);
-            return userInstance;
+            return CreateInstance(user);
+        }
+
+        public static bool TryGetInstance(UserContext user, out T instance)
+        {
+            return _userInstanceTable.TryGetValue(user, out instance);
         }
 
         public static T CreateInstance(UserContext user)
@@ -54,12 +56,7 @@ namespace ZGRemote.Common.Processor
                 ReleaseInstance(UserContext);
             }
         }
-
-        public static bool TryGetInstance(UserContext user, out T instance)
-        {
-            return _userInstanceTable.TryGetValue(user, out instance);
-        }
-        
+ 
         
         public static void Excute(UserContext user, IMessage message)
         {
