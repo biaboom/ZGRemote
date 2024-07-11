@@ -71,20 +71,23 @@ namespace ZGRemote.Common.Networking
             }
         }
 
-        private async void StartAccept()
+        private void StartAccept()
         {
-            try
+            _ = Task.Run( async () =>
             {
-                while (true)
+                try
                 {
-                    Socket client = await _listenSocket.AcceptAsync();
-                    _ = ProcessAccept(client);
+                    while (true)
+                    {
+                        Socket client = await _listenSocket.AcceptAsync();
+                        _ = ProcessAccept(client);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Log.Warning(ex, "listen error");
-            }
+                catch (Exception ex)
+                {
+                    Log.Warning(ex, "listen error");
+                }
+            });
         }
 
         private bool Authentication(Socket socket, out byte[] key)
