@@ -11,7 +11,7 @@ namespace ZGRemote.Common.Processor
     public delegate void Excute(UserContext user, MessageBase message);
     public abstract class DelegateHandlerBase<T> where T : DelegateHandlerBase<T>, new()
     {
-        protected static ConcurrentDictionary<UserContext, T> userInstanceTable = new ConcurrentDictionary<UserContext, T>();
+        private static ConcurrentDictionary<UserContext, T> userInstanceTable = new ConcurrentDictionary<UserContext, T>();
 
         public UserContext UserContext { get; set; }
 
@@ -64,7 +64,7 @@ namespace ZGRemote.Common.Processor
 
     }
 
-    //标记Handle能处理哪些Message
+    //标记DelegateHandler能处理哪些Message
     public class CanProcessMessageAttribute : Attribute
     {
         public Type[] CanProcessMessage { get; set; }

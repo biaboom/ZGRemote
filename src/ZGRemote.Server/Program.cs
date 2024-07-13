@@ -1,16 +1,17 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZGRemote.Common;
 using ZGRemote.Common.Logging;
 using ZGRemote.Common.Message;
-using ZGRemote.Common.Message.cs;
 using ZGRemote.Common.Networking;
 using ZGRemote.Common.Processor;
-using ZGRemote.Server.Handle;
+
+using ZGRemote.Server.Handler;
 
 namespace ZGRemote.Server
 {
@@ -25,14 +26,14 @@ namespace ZGRemote.Server
             Init();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run();
         }
 
         static void Init()
         {
             Logger.Init();
 
-            Common.Networking.ZGServer server = new Common.Networking.ZGServer(Settings.RSACSPBLOB, 512, 1024);
+            ZGServer server = new ZGServer(Settings.RSACSPBLOB, 512, 1024);
             server.OnConnect += OnConnect;
             server.OnReceive += OnReceive;
             server.OnDisConnect += OnDisConnect;
@@ -48,8 +49,25 @@ namespace ZGRemote.Server
 
         public static void OnConnect(UserContext user)
         {
-            SystemInfoHandle handle = SystemInfoHandle.CreateInstance(user);
-            handle.GetSystemInfo(SystemInfoCallBack);
+            SystemInfoDelegateHandler handle = SystemInfoDelegateHandler.CreateInstance(user);
+            handle.GetSystemInfoResponse += SystemInfoCallBack;
+            handle.GetSystemInfo();
+            Task.Run(() =>
+            {
+                EchoHandler.EchoMessage(user, "123");
+                Stopwatch stopwatch = new Stopwatch();
+                for(int i = 0; i < 20; i++)
+                {
+                    stopwatch.Restart();
+                    EchoHandler.EchoMessage(user, "123");
+                    stopwatch.Stop();
+                    Log.Information(stopwatch.ElapsedTicks.ToString());
+
+                    
+                }
+                
+                
+            });
         }
 
         public static void OnDisConnect(UserContext user)
@@ -68,7 +86,6 @@ namespace ZGRemote.Server
         public static void SystemInfoCallBack(UserContext user, SystemInfoResponse message)
         {
             Log.Information(message.ComputerName);
-            SystemInfoHandle.ReleaseInstance(user);
         }
     }
 }

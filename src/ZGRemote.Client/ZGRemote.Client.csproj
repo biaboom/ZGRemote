@@ -95,7 +95,8 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handle\SystemInfoHandle.cs" />
+    <Compile Include="Handler\EchoDelegateHandler.cs" />
+    <Compile Include="Handler\SystemInfoDelegateHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />

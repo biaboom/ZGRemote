@@ -104,7 +104,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handle\SystemInfoHandle.cs" />
+    <Compile Include="Handler\EchoHandler.cs" />
+    <Compile Include="Handler\SystemInfoDelegateHandler.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

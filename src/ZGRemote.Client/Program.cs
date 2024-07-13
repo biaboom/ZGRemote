@@ -24,7 +24,7 @@ namespace ZGRemote.Client
             Task.Run(() => Init());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run();
         }
 
         static void Init()
@@ -33,7 +33,7 @@ namespace ZGRemote.Client
             Logger.Init();
 #endif
 
-            Common.Networking.ZGClient client = new Common.Networking.ZGClient(Settings.RSACSPBLOB);
+            ZGClient client = new Common.Networking.ZGClient(Settings.RSACSPBLOB);
             client.OnConnect += OnConnect;
             client.OnReceive += OnReceive;
             int i = 0;

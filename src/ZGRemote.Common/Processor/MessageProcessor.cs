@@ -29,9 +29,10 @@ namespace ZGRemote.Common.Processor
         /// <param name="message"></param>
         public static void Process(UserContext user, MessageBase message)
         {
-            if (!Message2DelegateHandlerTable.TryGetValue(message.GetType(), out Excute action))
+            Excute action;
+            if (!Message2DelegateHandlerTable.TryGetValue(message.GetType(), out action))
             {
-                Log.Error($"parser message error! IP {user.IP}:{user.Port}\n message type:{message.GetType().Name}");
+                action = HandlerBase.Excute;
             }
             action(user, message);
         }
@@ -89,7 +90,7 @@ namespace ZGRemote.Common.Processor
         }
 
         /// <summary>
-        /// IMessage序列化为二进制数据
+        /// MessageBase序列化为二进制数据
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -99,7 +100,7 @@ namespace ZGRemote.Common.Processor
         }
 
         /// <summary>
-        /// 二进制数据反序列化为IMessage
+        /// 二进制数据反序列化为MessageBase
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>

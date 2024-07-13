@@ -4,32 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZGRemote.Common.Message;
-using ZGRemote.Common.Message.cs;
 using ZGRemote.Common.Networking;
 using ZGRemote.Common.Processor;
 
 namespace ZGRemote.Client.Handle
 {
-    [CanProcessMessage(typeof(SystemInfoRequest))]
-    internal class SystemInfoHandle : DelegateHandlerBase<SystemInfoHandle>
+    [CanProcessMessage(typeof(EchoRequest))]
+    public class EchoDelegateHandler : DelegateHandlerBase<EchoDelegateHandler>
     {
         public static new void Excute(UserContext user, MessageBase message)
         {
-            if (TryGetInstance(user, out SystemInfoHandle instance))
+            if (TryGetInstance(user, out EchoDelegateHandler instance))
             {
                 switch (message)
                 {
-                    case SystemInfoRequest systemInfoRequest:
-                        instance.GetSystemInfo(user, systemInfoRequest);
+                    case EchoRequest echoRequest:
+                        instance.Echo(user, echoRequest);
                     break;
                 }
             }
         }
 
-        public void GetSystemInfo(UserContext user, SystemInfoRequest message) 
+        private void Echo(UserContext user, EchoRequest message)
         {
-            SystemInfoResponse response = new SystemInfoResponse();
-            response.ComputerName = "Test";
+            EchoResponse response = new EchoResponse();
+            response.Message = message.Message;
+            response.ID = message.ID;
             user.SendPack(MessageProcessor.Pack(response));
         }
     }

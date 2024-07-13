@@ -4,19 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZGRemote.Common.Message;
-using ZGRemote.Common.Message.cs;
 using ZGRemote.Common.Networking;
 using ZGRemote.Common.Processor;
 
-namespace ZGRemote.Server.Handle
+namespace ZGRemote.Server.Handler
 {
     [CanProcessMessage(typeof(SystemInfoResponse))]
-    internal class SystemInfoHandle : DelegateHandlerBase<SystemInfoHandle>
+    internal class SystemInfoDelegateHandler : DelegateHandlerBase<SystemInfoDelegateHandler>
     {
         public event Action<UserContext, SystemInfoResponse> GetSystemInfoResponse;
         public static new void Excute(UserContext user, MessageBase message)
         {
-            if(TryGetInstance(user, out SystemInfoHandle instance))
+            if(TryGetInstance(user, out SystemInfoDelegateHandler instance))
             {
                 switch(message)
                 {
@@ -27,9 +26,8 @@ namespace ZGRemote.Server.Handle
             }
         }
 
-        public void GetSystemInfo(Action<UserContext, SystemInfoResponse> CallBack = null)
+        public void GetSystemInfo()
         {
-            if (CallBack != null) GetSystemInfoResponse = CallBack;
             SystemInfoRequest systemInfoRequest = new SystemInfoRequest();
             UserContext.SendPack(MessageProcessor.Pack(systemInfoRequest));
         }
