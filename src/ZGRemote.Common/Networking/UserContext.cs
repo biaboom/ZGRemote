@@ -15,8 +15,8 @@ namespace ZGRemote.Common.Networking
         private bool disposedValue;
 
         public Socket Socket { get; set; }
-        public Server Server { get; set; }
-        public Client Client { get; set; }
+        public ZGServer Server { get; set; }
+        public ZGClient Client { get; set; }
         public string IP { get; set; }
         public int Port { get; set; }
         public DateTime ConnectTime { get; set; }

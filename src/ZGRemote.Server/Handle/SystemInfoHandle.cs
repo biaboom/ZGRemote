@@ -11,7 +11,7 @@ using ZGRemote.Common.Processor;
 namespace ZGRemote.Server.Handle
 {
     [CanProcessMessage(typeof(SystemInfoResponse))]
-    internal class SystemInfoHandle : HandleBase<SystemInfoHandle>
+    internal class SystemInfoHandle : DelegateHandlerBase<SystemInfoHandle>
     {
         public event Action<UserContext, SystemInfoResponse> GetSystemInfoResponse;
         public static new void Excute(UserContext user, IMessage message)
@@ -31,7 +31,7 @@ namespace ZGRemote.Server.Handle
         {
             if (CallBack != null) GetSystemInfoResponse = CallBack;
             SystemInfoRequest systemInfoRequest = new SystemInfoRequest();
-            UserContext.SendPack(ProcessMessage.Pack(systemInfoRequest));
+            UserContext.SendPack(MessageProcessor.Pack(systemInfoRequest));
         }
     }
 }

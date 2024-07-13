@@ -32,7 +32,7 @@ namespace ZGRemote.Server
         {
             Logger.Init();
 
-            Common.Networking.Server server = new Common.Networking.Server(Settings.RSACSPBLOB, 512, 1024);
+            Common.Networking.ZGServer server = new Common.Networking.ZGServer(Settings.RSACSPBLOB, 512, 1024);
             server.OnConnect += OnConnect;
             server.OnReceive += OnReceive;
             server.OnDisConnect += OnDisConnect;
@@ -42,8 +42,8 @@ namespace ZGRemote.Server
 
         public static void OnReceive(UserContext user, byte[] data)
         {
-            IMessage message = ProcessMessage.UnPack(data);
-            ProcessMessage.Process(user, message);
+            IMessage message = MessageProcessor.UnPack(data);
+            MessageProcessor.Process(user, message);
         }
 
         public static void OnConnect(UserContext user)
@@ -57,7 +57,7 @@ namespace ZGRemote.Server
             try
             {
                 // 断开连接时释放所有handle
-                ProcessHandle.ReleaseAllHandleInstanceByUserContext(user);
+                DelegateHandlerProcessor.ReleaseAllDelegateHandlerInstanceByUserContext(user);
             }
             catch (Exception ex)
             {

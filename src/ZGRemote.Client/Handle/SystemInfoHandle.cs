@@ -11,7 +11,7 @@ using ZGRemote.Common.Processor;
 namespace ZGRemote.Client.Handle
 {
     [CanProcessMessage(typeof(SystemInfoRequest))]
-    internal class SystemInfoHandle : HandleBase<SystemInfoHandle>
+    internal class SystemInfoHandle : DelegateHandlerBase<SystemInfoHandle>
     {
         public static new void Excute(UserContext user, IMessage message)
         {
@@ -30,7 +30,7 @@ namespace ZGRemote.Client.Handle
         {
             SystemInfoResponse response = new SystemInfoResponse();
             response.ComputerName = "Test";
-            user.SendPack(ProcessMessage.Pack(response));
+            user.SendPack(MessageProcessor.Pack(response));
         }
     }
 }

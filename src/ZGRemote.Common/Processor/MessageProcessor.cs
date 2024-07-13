@@ -10,26 +10,26 @@ using ZGRemote.Common.Util;
 
 namespace ZGRemote.Common.Processor
 {
-    public static class ProcessMessage
+    public static class MessageProcessor
     {
         /*
         初始化后传入IMessage获得能够处理IMessage的委托
         */
-        private static Dictionary<Type, Excute> Message2HandleTable;
+        private static Dictionary<Type, Excute> Message2DelegateHandlerTable;
 
-        static ProcessMessage()
+        static MessageProcessor()
         {
             Init();
         }
 
         /// <summary>
-        /// 从socket接收到IMessage调用此方法，可以根据Message2HandleTable把消息传递给能够处理这条消息Handle
+        /// 从socket接收到IMessage调用此方法，可以根据Message2DelegateHandlerTable把消息传递给能够处理这条消息Handle
         /// </summary>
         /// <param name="user"></param>
         /// <param name="message"></param>
         public static void Process(UserContext user, IMessage message)
         {
-            if (!Message2HandleTable.TryGetValue(message.GetType(), out Excute action))
+            if (!Message2DelegateHandlerTable.TryGetValue(message.GetType(), out Excute action))
             {
                 Log.Error($"parser message error! IP {user.IP}:{user.Port}\n message type:{message.GetType().Name}");
             }
@@ -66,14 +66,14 @@ namespace ZGRemote.Common.Processor
                 RuntimeTypeModel.Default[IMessageType].AddSubType(i + 1, types[i]);
             }
 
-            Message2HandleTable = new Dictionary<Type, Excute>();
+            Message2DelegateHandlerTable = new Dictionary<Type, Excute>();
             /*  
-            扫描所有HandleBase的子类，添加到Message2HandleTable
+            扫描所有HandleBase的子类，添加到Message2DelegateHandlerTable
             key是CanProcessMessageAttribute.CanProcessMessage的值的成员
             vaule是Handlebase子类的静态方法Excute
             */
-            if(ProcessHandle.HandleList == null) ProcessHandle.Init();
-            types = ProcessHandle.HandleList;
+            if(DelegateHandlerProcessor.DelegateHandlerList == null) DelegateHandlerProcessor.Init();
+            types = DelegateHandlerProcessor.DelegateHandlerList;
             foreach (var type in types)
             {
                 var attr = type.GetCustomAttribute<CanProcessMessageAttribute>();
@@ -83,7 +83,7 @@ namespace ZGRemote.Common.Processor
                 var action = Delegate.CreateDelegate(typeof(Excute), method) as Excute;
                 foreach (var item in attr.CanProcessMessage)
                 {
-                    Message2HandleTable.Add(item, action);
+                    Message2DelegateHandlerTable.Add(item, action);
                 }
             }
         }

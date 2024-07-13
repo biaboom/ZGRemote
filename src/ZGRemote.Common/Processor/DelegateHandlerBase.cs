@@ -9,16 +9,16 @@ namespace ZGRemote.Common.Processor
 {
     
     public delegate void Excute(UserContext user, IMessage message);
-    public abstract class HandleBase<T> : IDisposable where T : HandleBase<T>, new()
+    public abstract class DelegateHandlerBase<T> : IDisposable where T : DelegateHandlerBase<T>, new()
     {
-        protected static ConcurrentDictionary<UserContext, T> _userInstanceTable = new ConcurrentDictionary<UserContext, T>();
+        protected static ConcurrentDictionary<UserContext, T> userInstanceTable = new ConcurrentDictionary<UserContext, T>();
         protected bool disposedValue;
 
         public UserContext UserContext { get; set; }
 
         public static T GetOrCreateInstance(UserContext user)
         {
-            if(_userInstanceTable.TryGetValue(user, out T instance))
+            if(userInstanceTable.TryGetValue(user, out T instance))
             {
                 return instance;
             }
@@ -27,14 +27,14 @@ namespace ZGRemote.Common.Processor
 
         public static bool TryGetInstance(UserContext user, out T instance)
         {
-            return _userInstanceTable.TryGetValue(user, out instance);
+            return userInstanceTable.TryGetValue(user, out instance);
         }
 
         public static T CreateInstance(UserContext user)
         {
             T userInstance = new T();
             userInstance.UserContext = user;
-            if(!_userInstanceTable.TryAdd(user, userInstance))
+            if(!userInstanceTable.TryAdd(user, userInstance))
             {
                 throw new Exception("CreateInstance failed");
             }
@@ -43,7 +43,7 @@ namespace ZGRemote.Common.Processor
 
         public static void ReleaseInstance(UserContext user)
         {
-            if(_userInstanceTable.TryRemove(user, out T instance))
+            if(userInstanceTable.TryRemove(user, out T instance))
             {
                 instance.Dispose();
             }
