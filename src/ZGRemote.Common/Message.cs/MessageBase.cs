@@ -1,7 +1,12 @@
+using ProtoBuf;
+using System;
+
 namespace ZGRemote.Common.Message
 {
-    public abstract MessageBase
+    [ProtoContract]
+    public abstract class MessageBase
     {
-        
+        [ProtoMember(64)]
+        public Guid ID { get; set; }
     }
 }
