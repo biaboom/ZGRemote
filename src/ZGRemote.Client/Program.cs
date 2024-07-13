@@ -58,7 +58,7 @@ namespace ZGRemote.Client
         {
             try
             {
-                IMessage message = MessageProcessor.UnPack(data);
+                MessageBase message = MessageProcessor.UnPack(data);
                 MessageProcessor.Process(user, message);
             }catch(Exception ex)
             {

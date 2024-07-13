@@ -13,7 +13,7 @@ namespace ZGRemote.Client.Handle
     [CanProcessMessage(typeof(SystemInfoRequest))]
     internal class SystemInfoHandle : DelegateHandlerBase<SystemInfoHandle>
     {
-        public static new void Excute(UserContext user, IMessage message)
+        public static new void Excute(UserContext user, MessageBase message)
         {
             if (TryGetInstance(user, out SystemInfoHandle instance))
             {

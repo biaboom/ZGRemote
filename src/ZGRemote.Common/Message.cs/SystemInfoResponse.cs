@@ -6,7 +6,7 @@ using System.Text;
 namespace ZGRemote.Common.Message.cs
 {
     [ProtoContract]
-    public class SystemInfoResponse : IMessage
+    public class SystemInfoResponse : MessageBase
     {
         [ProtoMember(1)]
         public string ComputerName { get; set; }

@@ -8,11 +8,10 @@ using ZGRemote.Common.Networking;
 namespace ZGRemote.Common.Processor
 {
     
-    public delegate void Excute(UserContext user, IMessage message);
+    public delegate void Excute(UserContext user, MessageBase message);
     public abstract class DelegateHandlerBase<T> where T : DelegateHandlerBase<T>, new()
     {
         protected static ConcurrentDictionary<UserContext, T> userInstanceTable = new ConcurrentDictionary<UserContext, T>();
-        protected bool disposedValue;
 
         public UserContext UserContext { get; set; }
 
@@ -58,7 +57,7 @@ namespace ZGRemote.Common.Processor
         }
  
         
-        public static void Excute(UserContext user, IMessage message)
+        public static void Excute(UserContext user, MessageBase message)
         {
             throw new Exception("the Excute mothod must override");
         }

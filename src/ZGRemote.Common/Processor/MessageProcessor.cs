@@ -27,7 +27,7 @@ namespace ZGRemote.Common.Processor
         /// </summary>
         /// <param name="user"></param>
         /// <param name="message"></param>
-        public static void Process(UserContext user, IMessage message)
+        public static void Process(UserContext user, MessageBase message)
         {
             if (!Message2DelegateHandlerTable.TryGetValue(message.GetType(), out Excute action))
             {
@@ -41,7 +41,7 @@ namespace ZGRemote.Common.Processor
             var allType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes());
             
             // 扫描所有实现了接口IMessage的类 
-            var IMessageType = typeof(IMessage);
+            var IMessageType = typeof(MessageBase);
             var types = (from type in allType
                         where type.IsClass && !type.IsAbstract && IMessageType.IsAssignableFrom(type)
                         select type).ToArray();
@@ -93,9 +93,9 @@ namespace ZGRemote.Common.Processor
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static byte[] Pack(IMessage message)
+        public static byte[] Pack(MessageBase message)
         {
-            return SerializeUtil.Serialize<IMessage>(message);
+            return SerializeUtil.Serialize<MessageBase>(message);
         }
 
         /// <summary>
@@ -103,9 +103,9 @@ namespace ZGRemote.Common.Processor
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static IMessage UnPack(byte[] data)
+        public static MessageBase UnPack(byte[] data)
         {
-            return SerializeUtil.Deserialize<IMessage>(data);
+            return SerializeUtil.Deserialize<MessageBase>(data);
         }
 
 

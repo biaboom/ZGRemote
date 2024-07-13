@@ -14,7 +14,7 @@ namespace ZGRemote.Server.Handle
     internal class SystemInfoHandle : DelegateHandlerBase<SystemInfoHandle>
     {
         public event Action<UserContext, SystemInfoResponse> GetSystemInfoResponse;
-        public static new void Excute(UserContext user, IMessage message)
+        public static new void Excute(UserContext user, MessageBase message)
         {
             if(TryGetInstance(user, out SystemInfoHandle instance))
             {

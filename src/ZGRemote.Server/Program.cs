@@ -42,7 +42,7 @@ namespace ZGRemote.Server
 
         public static void OnReceive(UserContext user, byte[] data)
         {
-            IMessage message = MessageProcessor.UnPack(data);
+            MessageBase message = MessageProcessor.UnPack(data);
             MessageProcessor.Process(user, message);
         }
 
