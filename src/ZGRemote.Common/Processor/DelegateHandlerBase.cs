@@ -62,6 +62,10 @@ namespace ZGRemote.Common.Processor
             throw new Exception("the Excute mothod must override");
         }
 
+        public static void SendMessage(UserContext user, MessageBase message)
+        {
+            user.SendPack(MessageProcessor.Pack(message));
+        }
     }
 
     //标记DelegateHandler能处理哪些Message

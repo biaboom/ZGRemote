@@ -29,7 +29,7 @@ namespace ZGRemote.Server.Handler
         public void GetSystemInfo()
         {
             SystemInfoRequest systemInfoRequest = new SystemInfoRequest();
-            UserContext.SendPack(MessageProcessor.Pack(systemInfoRequest));
+            SendMessage(UserContext, systemInfoRequest);
         }
     }
 }
