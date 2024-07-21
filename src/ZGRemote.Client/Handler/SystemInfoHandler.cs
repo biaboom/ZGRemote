@@ -10,22 +10,19 @@ using ZGRemote.Common.Processor;
 namespace ZGRemote.Client.Handle
 {
     [CanProcessMessage(typeof(SystemInfoRequest))]
-    public class SystemInfoDelegateHandler : DelegateHandlerBase<SystemInfoDelegateHandler>
+    public class SystemInfoHandler : HandlerBase
     {
         public static new void Excute(UserContext user, MessageBase message)
         {
-            if (TryGetInstance(user, out SystemInfoDelegateHandler instance))
+            switch (message)
             {
-                switch (message)
-                {
-                    case SystemInfoRequest systemInfoRequest:
-                        instance.GetSystemInfo(user, systemInfoRequest);
+                case SystemInfoRequest systemInfoRequest:
+                    GetSystemInfo(user, systemInfoRequest);
                     break;
-                }
             }
         }
 
-        public void GetSystemInfo(UserContext user, SystemInfoRequest message) 
+        private static void GetSystemInfo(UserContext user, SystemInfoRequest message) 
         {
             SystemInfoResponse response = new SystemInfoResponse();
             response.ID = message.ID;

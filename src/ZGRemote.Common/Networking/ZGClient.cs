@@ -18,9 +18,9 @@ namespace ZGRemote.Common.Networking
         private Socket _socket;
         private RSACryptoServiceProvider _rsa;
         private Aes _aes;
-        public event Action<UserContext> OnConnect;
-        public event Action<UserContext> OnDisConnect;
-        public event Action<UserContext, byte[]> OnReceive;
+        public event Action<UserContext> Connect;
+        public event Action<UserContext> DisConnect;
+        public event Action<UserContext, byte[]> Receive;
 
         public bool Connected { get { return _socket.Connected; } }
 
@@ -34,7 +34,7 @@ namespace ZGRemote.Common.Networking
             _aes.Padding = PaddingMode.PKCS7;
         }
 
-        public bool Connect(string IP = "127.0.0.1", int PORT = 9527)
+        public bool ConnectServer(string IP = "127.0.0.1", int PORT = 9527)
         {
             if (_socket.Connected) return false;
             try
@@ -49,7 +49,7 @@ namespace ZGRemote.Common.Networking
                 userContext.Client = this;
                 try
                 {
-                    OnConnect?.Invoke(userContext);
+                    Connect?.Invoke(userContext);
                 }
                 catch(Exception ex)
                 {
@@ -102,7 +102,7 @@ namespace ZGRemote.Common.Networking
                 await Task.WhenAll(reading, writing);
 
                 if (_socket.Connected) _socket.Disconnect(true);
-                OnDisConnect?.Invoke(userContext);
+                DisConnect?.Invoke(userContext);
             }
             catch(Exception ex)
             {
@@ -208,7 +208,7 @@ namespace ZGRemote.Common.Networking
         {
             try
             {
-                OnReceive?.Invoke(userContext, AesUtil.Decrypt(pack.ToArray(), userContext.AesDecryptor));
+                Receive?.Invoke(userContext, AesUtil.Decrypt(pack.ToArray(), userContext.AesDecryptor));
             }
             catch (Exception ex)
             {

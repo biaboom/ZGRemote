@@ -34,9 +34,9 @@ namespace ZGRemote.Server
             Logger.Init();
 
             ZGServer server = new ZGServer(Settings.RSACSPBLOB, 512, 1024);
-            server.OnConnect += OnConnect;
-            server.OnReceive += OnReceive;
-            server.OnDisConnect += OnDisConnect;
+            server.Connect += OnConnect;
+            server.Receive += OnReceive;
+            server.DisConnect += OnDisConnect;
             server.Start();
             
         }
@@ -75,7 +75,7 @@ namespace ZGRemote.Server
             try
             {
                 // 断开连接时释放所有handle
-                DelegateHandlerProcessor.ReleaseAllDelegateHandlerInstanceByUserContext(user);
+                HandlerProcessor.ReleaseAllDelegateHandlerInstanceByUserContext(user);
             }
             catch (Exception ex)
             {

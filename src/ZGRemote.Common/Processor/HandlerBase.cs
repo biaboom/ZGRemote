@@ -33,9 +33,12 @@ namespace ZGRemote.Common.Processor
 
                 messageWaitEventTable.TryRemove(guid, out _);
                 return messageWaitEvent.Message;
-                
             }
+        }
 
+        protected static void SendMessageNoWait(UserContext user, MessageBase message)
+        {
+            user.SendPack(MessageProcessor.Pack(message));
         }
     }
 }

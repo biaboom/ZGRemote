@@ -8,10 +8,13 @@ using ZGRemote.Common.Networking;
 
 namespace ZGRemote.Common.Processor
 {
-    public static class DelegateHandlerProcessor
+    public static class HandlerProcessor
     {
         // 所有DelegateHandlerBase子类集合
         public static Type[] DelegateHandlerList;
+
+        // 所有HandlerBase子类集合
+        public static Type[] HandlerList;
 
         // 提前扫描所有handler的CreateInstance方法，方便CreateAllDelegateHandlerInstanceByUserContext使用。
         private static List<MethodInfo> DelegateHandlerCreateInstanceMethodList;
@@ -20,18 +23,26 @@ namespace ZGRemote.Common.Processor
         private static List<MethodInfo> DelegateHandlerReleaseInstanceMethodList;
 
 
-        static DelegateHandlerProcessor()
+        static HandlerProcessor()
         {
             Init();
         }
 
         public static void Init()
         {
+            var handlerBaseType = typeof(HandlerBase);
+            if (HandlerList == null)
+            {
+                // types 为所有继承了DelegateHandlerBase<>的子类，由于DelegateHandlerBase是泛型类所以不能直接使用IsAssignableFrom和IsSubclassOf
+                HandlerList = (from type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes())
+                                       where type.IsClass && !type.IsAbstract && type.IsSubclassOf(handlerBaseType)
+                                       select type).ToArray();
+            }
+
             var delegateHandlerBaseType = typeof(DelegateHandlerBase<>);
             if (DelegateHandlerList == null)
             {
-                var test = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).Where(t => t.IsClass);
-                // types 为所有继承了DelegateHandlerBase<>的子类，由于DelegateHandlerBase是泛型类所以不能直接使用IsAssignableFrom和IsSubclassOf
+                // 由于DelegateHandlerBase是泛型类所以不能直接使用IsAssignableFrom和IsSubclassOf
                 DelegateHandlerList = (from type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes())
                               where type.IsClass && !type.IsAbstract
                               let baseType = type.BaseType

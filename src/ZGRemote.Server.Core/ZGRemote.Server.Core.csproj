@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Handler\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ZGRemote.Common\ZGRemote.Common.csproj" />
   </ItemGroup>
 

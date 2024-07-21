@@ -10,27 +10,24 @@ using ZGRemote.Common.Processor;
 namespace ZGRemote.Client.Handle
 {
     [CanProcessMessage(typeof(EchoRequest))]
-    public class EchoDelegateHandler : DelegateHandlerBase<EchoDelegateHandler>
+    public class EchoHandler : HandlerBase
     {
         public static new void Excute(UserContext user, MessageBase message)
         {
-            if (TryGetInstance(user, out EchoDelegateHandler instance))
+            switch (message)
             {
-                switch (message)
-                {
-                    case EchoRequest echoRequest:
-                        instance.Echo(user, echoRequest);
+                case EchoRequest echoRequest:
+                    Echo(user, echoRequest);
                     break;
-                }
             }
         }
 
-        private void Echo(UserContext user, EchoRequest message)
+        private static void Echo(UserContext user, EchoRequest message)
         {
             EchoResponse response = new EchoResponse();
             response.Message = message.Message;
             response.ID = message.ID;
-            user.SendPack(MessageProcessor.Pack(response));
+            SendMessageNoWait(user, response);
         }
     }
 }

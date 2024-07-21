@@ -33,11 +33,11 @@ namespace ZGRemote.Client
             Logger.Init();
 #endif
 
-            ZGClient client = new Common.Networking.ZGClient(Settings.RSACSPBLOB);
-            client.OnConnect += OnConnect;
-            client.OnReceive += OnReceive;
+            ZGClient client = new ZGClient(Settings.RSACSPBLOB);
+            client.Connect += OnConnect;
+            client.Receive += OnReceive;
             int i = 0;
-            while(!client.Connect() && i <= 60)
+            while(!client.ConnectServer() && i <= 60)
             {
                 i++;
                 Thread.Sleep(1000);
@@ -51,7 +51,7 @@ namespace ZGRemote.Client
 
         static void OnConnect(UserContext user)
         {
-            DelegateHandlerProcessor.CreateAllDelegateHandlerInstanceByUserContext(user);
+            HandlerProcessor.CreateAllDelegateHandlerInstanceByUserContext(user);
         }
 
         static void OnReceive(UserContext user, byte[] data)

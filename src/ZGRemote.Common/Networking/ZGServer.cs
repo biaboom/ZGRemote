@@ -28,9 +28,9 @@ namespace ZGRemote.Common.Networking
         public List<UserContext> ClientList { get { return _clientList; } }
         public int ClientCount { get { return _clientCount; } }
         public bool IsRunning { get { return _running; } }
-        public event Action<UserContext, byte[]> OnReceive;
-        public event Action<UserContext> OnConnect;
-        public event Action<UserContext> OnDisConnect;
+        public event Action<UserContext, byte[]> Receive;
+        public event Action<UserContext> Connect;
+        public event Action<UserContext> DisConnect;
 
         public ZGServer(byte[] rsaBlobKey, int bufferSize, int maxClient)
         {
@@ -154,7 +154,7 @@ namespace ZGRemote.Common.Networking
             lock (_clientList) _clientList.Add(userContext);
             try
             {
-                OnConnect?.Invoke(userContext);
+                Connect?.Invoke(userContext);
             }
             catch (Exception ex)
             {
@@ -265,7 +265,7 @@ namespace ZGRemote.Common.Networking
         {
             try
             {
-                OnReceive?.Invoke(userContext, AesUtil.Decrypt(pack.ToArray(), userContext.AesDecryptor));
+                Receive?.Invoke(userContext, AesUtil.Decrypt(pack.ToArray(), userContext.AesDecryptor));
             }
             catch(Exception ex)
             {
@@ -291,7 +291,7 @@ namespace ZGRemote.Common.Networking
         {
             try
             {
-                OnDisConnect?.Invoke(userContext);
+                DisConnect?.Invoke(userContext);
             }
             catch (Exception ex)
             {
