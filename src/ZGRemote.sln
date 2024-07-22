@@ -11,10 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZGRemote.Server", "ZGRemote
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZGRemote.Client", "ZGRemote.Client\ZGRemote.Client.csproj", "{F34E0EEC-6A8B-4FBA-9357-D4DF08C38AA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZGRemote.Server.Core", "ZGRemote.Server.Core\ZGRemote.Server.Core.csproj", "{AB4DCD2A-4A4B-47D3-A3D3-18BDBF0852BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZGRemote.Server.Core", "ZGRemote.Server.Core\ZGRemote.Server.Core.csproj", "{AB4DCD2A-4A4B-47D3-A3D3-18BDBF0852BC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A23FC8DC-0295-4EA3-A1D9-050521714FF5} = {A23FC8DC-0295-4EA3-A1D9-050521714FF5}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZGRemote.Server.UI", "ZGRemote.Server.UI\ZGRemote.Server.UI.csproj", "{B9C152F0-E9BA-4AFA-878A-64B78FA450D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{AB4DCD2A-4A4B-47D3-A3D3-18BDBF0852BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB4DCD2A-4A4B-47D3-A3D3-18BDBF0852BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB4DCD2A-4A4B-47D3-A3D3-18BDBF0852BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C152F0-E9BA-4AFA-878A-64B78FA450D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C152F0-E9BA-4AFA-878A-64B78FA450D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C152F0-E9BA-4AFA-878A-64B78FA450D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C152F0-E9BA-4AFA-878A-64B78FA450D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
