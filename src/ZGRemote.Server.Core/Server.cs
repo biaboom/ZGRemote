@@ -4,9 +4,9 @@ using System.Text;
 using ZGRemote.Common.Message;
 using ZGRemote.Common.Networking;
 using ZGRemote.Common.Processor;
-using ZGRemote.Server.Core.Models;
+using ZGRemote.Server.Core.Handler;
 
-namespace ZGRemote.Server.Core.Services
+namespace ZGRemote.Server.Core
 {
     public class Server
     {
@@ -47,8 +47,8 @@ namespace ZGRemote.Server.Core.Services
             zgserver.Start(IP, Port);
         }
 
-        public void Stop() 
-        { 
+        public void Stop()
+        {
             zgserver.Connect -= OnConnect;
             zgserver.DisConnect -= OnDisconnect;
             zgserver.Receive -= OnReceive;
@@ -58,12 +58,35 @@ namespace ZGRemote.Server.Core.Services
 
         private void OnConnect(UserContext userContext)
         {
-            
+            var info = SystemInfoHandler.GetSystemInfo(userContext);
+            if(info == null)
+            {
+                zgserver.DisConnect -= OnDisconnect;
+                zgserver.CloseClient(userContext);
+                return;
+            }
+
+            User user = new User()
+            {
+                IP = userContext.IP,
+                Port = userContext.Port,
+                Name = info["UserName"],
+                OperatingSystem = info["ComputerVersion"],
+                ComputerName = info["ComputerName"],
+                UserContext = userContext
+            };
+            lock(UserList) { UserList.Add(user); }
+            Connect?.Invoke(user);
         }
 
         private void OnDisconnect(UserContext userContext)
         {
-
+            User user = UserList.Find(u => u.UserContext == userContext);
+            if(user != null)
+            {
+                lock (UserList) {  UserList.Remove(user); }
+                DisConnect?.Invoke(user);
+            }    
         }
 
         private void OnReceive(UserContext userContext, byte[] data)

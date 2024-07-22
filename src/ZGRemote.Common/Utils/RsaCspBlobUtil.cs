@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace ZGRemote.Common.Util
+namespace ZGRemote.Common.Utils
 {
     public class RsaCspBlobUtil
     {

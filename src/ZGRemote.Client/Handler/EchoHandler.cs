@@ -27,7 +27,7 @@ namespace ZGRemote.Client.Handle
             EchoResponse response = new EchoResponse();
             response.Message = message.Message;
             response.ID = message.ID;
-            SendMessageNoWait(user, response);
+            SendMessage(user, response);
         }
     }
 }

@@ -6,7 +6,7 @@ using ProtoBuf.Meta;
 using Serilog;
 using ZGRemote.Common.Message;
 using ZGRemote.Common.Networking;
-using ZGRemote.Common.Util;
+using ZGRemote.Common.Utils;
 
 namespace ZGRemote.Common.Processor
 {

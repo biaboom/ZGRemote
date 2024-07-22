@@ -20,7 +20,7 @@ namespace ZGRemote.Common.Processor
             }
         }
 
-        protected static MessageBase SendMessage(UserContext user, MessageBase message)
+        protected static T SendMessage<T>(UserContext user, MessageBase message) where T : MessageBase
         {
             using (MessageWaitEvent messageWaitEvent = new MessageWaitEvent())
             {
@@ -29,14 +29,17 @@ namespace ZGRemote.Common.Processor
                 messageWaitEventTable.TryAdd(guid, messageWaitEvent);
                 user.SendPack(MessageProcessor.Pack(message));
 
-                messageWaitEvent.WaitMessage();
-
+                T result = null;
+                if(messageWaitEvent.WaitMessage())
+                {
+                    result =  messageWaitEvent.Message as T;
+                }
                 messageWaitEventTable.TryRemove(guid, out _);
-                return messageWaitEvent.Message;
+                return result;
             }
         }
 
-        protected static void SendMessageNoWait(UserContext user, MessageBase message)
+        protected static void SendMessage(UserContext user, MessageBase message)
         {
             user.SendPack(MessageProcessor.Pack(message));
         }

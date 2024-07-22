@@ -2,7 +2,7 @@ using System.IO;
 using System.Security.Cryptography;
 using ProtoBuf;
 
-namespace ZGRemote.Common.Util
+namespace ZGRemote.Common.Utils
 {
     public static class SerializeUtil
     {

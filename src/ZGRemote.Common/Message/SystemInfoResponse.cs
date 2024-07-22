@@ -13,12 +13,6 @@ namespace ZGRemote.Common.Message
         [ProtoMember(2)]
         public string ComputerVersion { get; set; }
         [ProtoMember(3)]
-        public string CpuName { get; set; }
-        [ProtoMember(4)]
-        public string PhysicalMemory { get; set; } //MB
-        [ProtoMember(5)]
-        public string DiskSize { get; set; } //MB
-        [ProtoMember(6)]
-        public string[] MAC { get; set; }
+        public string UserName { get; set; }
     }
 }

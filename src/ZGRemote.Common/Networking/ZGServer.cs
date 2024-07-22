@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using ZGRemote.Common.Extensions;
-using ZGRemote.Common.Util;
+using ZGRemote.Common.Utils;
 using Serilog;
 
 namespace ZGRemote.Common.Networking

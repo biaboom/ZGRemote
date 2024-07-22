@@ -1,7 +1,7 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace ZGRemote.Common.Util
+namespace ZGRemote.Common.Utils
 {
     public static class AesUtil
     {

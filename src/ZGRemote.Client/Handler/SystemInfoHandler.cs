@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ZGRemote.Client.Utils;
 using ZGRemote.Common.Message;
 using ZGRemote.Common.Networking;
 using ZGRemote.Common.Processor;
@@ -26,8 +27,10 @@ namespace ZGRemote.Client.Handle
         {
             SystemInfoResponse response = new SystemInfoResponse();
             response.ID = message.ID;
-            response.ComputerName = "Test";
-            user.SendPack(MessageProcessor.Pack(response));
+            response.ComputerName = SystemInfoUtil.MachineName;
+            response.ComputerVersion = SystemInfoUtil.OsCaption;
+            response.UserName = SystemInfoUtil.UserName;
+            SendMessage(user, response);
         }
     }
 }

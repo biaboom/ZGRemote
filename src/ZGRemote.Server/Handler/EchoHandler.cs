@@ -13,7 +13,7 @@ namespace ZGRemote.Server.Handler
     {
         public static string EchoMessage(UserContext user, string message)
         {
-            EchoResponse response = SendMessage(user, new EchoRequest() { Message = message }) as EchoResponse;
+            EchoResponse response = SendMessage<EchoResponse>(user, new EchoRequest() { Message = message });
             return response?.Message;
         }
     }

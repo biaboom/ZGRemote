@@ -2,7 +2,7 @@ using System.Buffers;
 using System.Security.Cryptography;
 using System.Text;
 using ProtoBuf;
-using ZGRemote.Common.Util;
+using ZGRemote.Common.Utils;
 namespace ZGRemote.Common.Test;
 
 public class SerializeUtilTest

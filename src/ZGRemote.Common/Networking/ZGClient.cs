@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Serilog;
 using ZGRemote.Common.Extensions;
-using ZGRemote.Common.Util;
+using ZGRemote.Common.Utils;
 
 namespace ZGRemote.Common.Networking
 {
