@@ -42,5 +42,11 @@ namespace ZGRemote.Server.UI.ViewModels
                 CurrentViewModel = vm;
             }
         }
+
+        [RelayCommand]
+        public void Test()
+        {
+            SettingsViewModel.IsSelected = true;
+        }
     }
 }

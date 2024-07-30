@@ -73,7 +73,7 @@ namespace ZGRemote.Common.Networking
 
         private void StartAccept()
         {
-            _ = Task.Run( async () =>
+            Task.Run( async () =>
             {
                 try
                 {

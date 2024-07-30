@@ -23,9 +23,13 @@
         </Grid.ColumnDefinitions>
         <hc:SimplePanel Grid.Column="0">
             <lc:MemuView BorderBrush="Transparent" Background="WhiteSmoke">
+                <lc:MemuView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource MemuViewItemBaseStyle}" TargetType="lc:MemuViewItem">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                    </Style>
+                </lc:MemuView.ItemContainerStyle>
                 <hc:Interaction.Triggers>
                     <hc:EventTrigger EventName="SelectedItemChanged">
-
                         <hc:EventToCommand Command="{Binding NavigateCommand}" PassEventArgsToCommand="True" EventArgsConverter="{StaticResource memuSelectChangeEventArgsToViewModelConverter}" ></hc:EventToCommand>
                     </hc:EventTrigger>
                 </hc:Interaction.Triggers>
@@ -33,6 +37,7 @@
                 <lc:MemuViewItem DataContext="{Binding RemoteViewModel}" Header="Remote"/>
                 <lc:MemuViewItem DataContext="{Binding BuilderViewModel}" Header="Builder"/>
                 <lc:MemuViewItem DataContext="{Binding SettingsViewModel}" Header="Settings"/>
+                
             </lc:MemuView>
         </hc:SimplePanel>
         <Border Grid.Column="1" CornerRadius="7,0,0,0" Margin="5,5,0,0" Background="White" Padding="5">

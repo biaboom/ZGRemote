@@ -10,6 +10,8 @@ namespace ZGRemote.Common.Processor
     {
         private AutoResetEvent autoEvent;
 
+        const int millisecondsTimeout = 60 * 1000;
+
         protected bool disposedValue;
 
         private MessageBase message;
@@ -32,7 +34,7 @@ namespace ZGRemote.Common.Processor
             autoEvent = new AutoResetEvent(false);
         }
 
-        public bool WaitMessage(int millisecondsTimeout = 15 * 1000)
+        public bool WaitMessage()
         {
             return autoEvent.WaitOne(millisecondsTimeout);
         }

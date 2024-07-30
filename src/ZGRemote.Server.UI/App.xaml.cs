@@ -2,6 +2,10 @@
 using System.Data;
 using System.Windows;
 using ZGRemote.Server.UI.ViewModels;
+using ZGRemote.Server.Core;
+using Serilog.Events;
+using Serilog;
+using ZGRemote.Common.Logging;
 
 namespace ZGRemote.Server.UI
 {
@@ -12,9 +16,21 @@ namespace ZGRemote.Server.UI
     {
         public MainViewModel MainViewModel {  get; set; }
 
+        public static new App Current => (App)Application.Current;
+
+        public Core.Server Server { get; set; }
+
         public App()
         {
+            Logger.Init();
+            Server = new Core.Server();
+            Server.RsaBlobKey = Settings.RSACSPBLOB;
             MainViewModel = new MainViewModel();
+            
+
+#if DEBUG
+            Server.Start();
+#endif
         }
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -22,6 +38,7 @@ namespace ZGRemote.Server.UI
             MainWindow mainWindow = new MainWindow();
             mainWindow.DataContext = MainViewModel;
             mainWindow.Show();
+
         }
     }
 

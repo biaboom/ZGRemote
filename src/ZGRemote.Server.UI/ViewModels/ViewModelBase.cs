@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace ZGRemote.Server.UI.ViewModels
 {
-    public class ViewModelBase : ObservableObject
+    public partial class ViewModelBase : ObservableObject
     {
+        [ObservableProperty]
+        private bool isSelected;
     }
 }

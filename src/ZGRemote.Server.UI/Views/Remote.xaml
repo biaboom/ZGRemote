@@ -3,10 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:ZGRemote.Server.UI.Views"
-             mc:Ignorable="d" 
+             xmlns:vm="clr-namespace:ZGRemote.Server.UI.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:RemoteViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock FontSize="29" Text="Hello"/>
+        <ListView ItemsSource="{Binding Users}" Background="White" BorderBrush="Transparent">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="80" Header="Name" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Width="80" Header="IP" DisplayMemberBinding="{Binding IP}"/>
+                    <GridViewColumn Width="50" Header="Port" DisplayMemberBinding="{Binding Port}"/>
+                    <GridViewColumn Width="180" Header="OperatingSystem" DisplayMemberBinding="{Binding OperatingSystem}"/>
+                    <GridViewColumn Width="180" Header="ComputerName" DisplayMemberBinding="{Binding ComputerName}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </UserControl>

@@ -2,10 +2,10 @@
                     xmlns:hc="https://handyorg.github.io/handycontrol"
                     xmlns:local="clr-namespace:ZGRemote.Server.UI.Controls"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style BasedOn="{StaticResource TreeViewBaseStyle}" TargetType="local:MemuView">
+    <Style x:Key="MemuViewBaseStyle" BasedOn="{StaticResource TreeViewBaseStyle}" TargetType="local:MemuView">
         <Setter Property="Width" Value="200"/>
     </Style>
-    <Style BasedOn="{StaticResource TreeViewItemBaseStyle}" TargetType="local:MemuViewItem">
+    <Style x:Key="MemuViewItemBaseStyle" BasedOn="{StaticResource TreeViewItemBaseStyle}" TargetType="local:MemuViewItem">
         <Setter Property="Height" Value="40"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -44,7 +44,7 @@
                                 <Condition Property="IsSelected" Value="true"/>
                                 <Condition Property="IsSelectionActive" Value="false"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource DarkDefaultBrush}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource SecondaryRegionBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                         </MultiTrigger>
                         <MultiTrigger>
@@ -89,4 +89,6 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style BasedOn="{StaticResource MemuViewBaseStyle}" TargetType="local:MemuView"/>
+    <Style BasedOn="{StaticResource MemuViewItemBaseStyle}" TargetType="local:MemuViewItem"/>
 </ResourceDictionary>

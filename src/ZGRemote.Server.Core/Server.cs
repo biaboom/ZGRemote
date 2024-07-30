@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ZGRemote.Common.Message;
 using ZGRemote.Common.Networking;
 using ZGRemote.Common.Processor;
@@ -24,7 +27,7 @@ namespace ZGRemote.Server.Core
 
         public List<User> UserList { get; private set; }
 
-        private ZGServer zgserver;
+        private ZGServer server;
 
         public event Action<User> Connect;
         public event Action<User> DisConnect;
@@ -40,58 +43,71 @@ namespace ZGRemote.Server.Core
 
         public void Start()
         {
-            zgserver = new ZGServer(RsaBlobKey, BuffSize, MaxClient);
-            zgserver.Connect += OnConnect;
-            zgserver.DisConnect += OnDisconnect;
-            zgserver.Receive += OnReceive;
-            zgserver.Start(IP, Port);
+            server = new ZGServer(RsaBlobKey, BuffSize, MaxClient);
+            UserList = new List<User>();
+            server.Connect += OnConnect;
+            server.DisConnect += OnDisconnect;
+            server.Receive += OnReceive;
+            server.Start(IP, Port);
+            IsRunning = true;
         }
 
         public void Stop()
         {
-            zgserver.Connect -= OnConnect;
-            zgserver.DisConnect -= OnDisconnect;
-            zgserver.Receive -= OnReceive;
-            zgserver.Stop();
-            zgserver = null;
+            server.Connect -= OnConnect;
+            server.DisConnect -= OnDisconnect;
+            server.Receive -= OnReceive;
+            server.Stop();
+            server = null;
+            IsRunning = false;
         }
 
         private void OnConnect(UserContext userContext)
         {
-            var info = SystemInfoHandler.GetSystemInfo(userContext);
-            if(info == null)
+            Task.Run(() =>
             {
-                zgserver.DisConnect -= OnDisconnect;
-                zgserver.CloseClient(userContext);
-                return;
-            }
+                try
+                {
+                    var info = SystemInfoHandler.GetSystemInfo(userContext);
+                    if (info == null)
+                    {
+                        server.CloseClient(userContext);
+                        return;
+                    }
 
-            User user = new User()
-            {
-                IP = userContext.IP,
-                Port = userContext.Port,
-                Name = info["UserName"],
-                OperatingSystem = info["ComputerVersion"],
-                ComputerName = info["ComputerName"],
-                UserContext = userContext
-            };
-            lock(UserList) { UserList.Add(user); }
-            Connect?.Invoke(user);
+                    User user = new User()
+                    {
+                        IP = userContext.IP,
+                        Port = userContext.Port,
+                        Name = info["UserName"],
+                        OperatingSystem = info["ComputerVersion"],
+                        ComputerName = info["ComputerName"],
+                        UserContext = userContext
+                    };
+                    lock (UserList) { UserList.Add(user); }
+                    Connect?.Invoke(user);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "connect error");
+                }
+            });
         }
 
         private void OnDisconnect(UserContext userContext)
         {
-            User user = UserList.Find(u => u.UserContext == userContext);
-            if(user != null)
+            User user = UserList.FirstOrDefault(u => u.UserContext == userContext);
+            if (user != null)
             {
-                lock (UserList) {  UserList.Remove(user); }
+                lock (UserList) { UserList.Remove(user); }
                 DisConnect?.Invoke(user);
-            }    
+            }
         }
 
         private void OnReceive(UserContext userContext, byte[] data)
         {
-            MessageProcessor.Process(userContext, MessageProcessor.UnPack(data));
+            MessageBase message = MessageProcessor.UnPack(data);
+            MessageProcessor.Process(userContext, message);
         }
     }
 }
