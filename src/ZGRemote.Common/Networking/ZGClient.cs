@@ -37,33 +37,25 @@ namespace ZGRemote.Common.Networking
         public bool ConnectServer(string IP = "127.0.0.1", int PORT = 9527)
         {
             if (_socket.Connected) return false;
-            try
-            {
-                _socket.Connect(new IPEndPoint(IPAddress.Parse(IP), PORT));
-                if (!Authentication(_socket))
-                {
-                    if (_socket.Connected) _socket.Disconnect(true);
-                    return false;
-                }
-                UserContext userContext = new UserContext(_socket, _aes.CreateEncryptor(), _aes.CreateDecryptor());
-                userContext.Client = this;
-                try
-                {
-                    Connect?.Invoke(userContext);
-                }
-                catch(Exception ex)
-                {
-                    Log.Error(ex, "OnConnect Error");
-                }
-                
-                StartReceive(userContext);
-                return true;
-            }
-            catch
+            _socket.Connect(new IPEndPoint(IPAddress.Parse(IP), PORT));
+            if (!Authentication(_socket))
             {
                 if (_socket.Connected) _socket.Disconnect(true);
                 return false;
             }
+            UserContext userContext = new UserContext(_socket, _aes.CreateEncryptor(), _aes.CreateDecryptor());
+            userContext.Client = this;
+            try
+            {
+                Connect?.Invoke(userContext);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "OnConnect Error");
+            }
+
+            StartReceive(userContext);
+            return true;
         }
         public void Disconnect()
         {

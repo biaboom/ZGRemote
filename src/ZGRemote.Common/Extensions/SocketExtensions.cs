@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace ZGRemote.Common.Extensions
 {
@@ -17,13 +18,14 @@ namespace ZGRemote.Common.Extensions
         /// <param name="data"></param>
         public static void SendPack(this Socket socket, byte[] data)
         {
-            // send header
             byte[] header = BitConverter.GetBytes(data.Length);
             // if (!BitConverter.IsLittleEndian) Array.Reverse(header); // 转换为小端法
-            socket.SendAllBytes(header);
-
-            // send body
-            socket.SendAllBytes(data);
+            socket.Send(
+                new List<ArraySegment<byte>>()
+                {
+                    new ArraySegment<byte>(header),
+                    new ArraySegment<byte>(data)
+                });
         }
         /// <summary>
         /// 发送 data 会自动加上4字节的包头为data的大小，配合ReceivePack使用。
@@ -35,13 +37,15 @@ namespace ZGRemote.Common.Extensions
         /// <param name="size">发送的数据大小</param>
         public static void SendPack(this Socket socket, byte[] data, int offset, int size)
         {
-            // send header
+            
             byte[] header = BitConverter.GetBytes(size);
             // if (!BitConverter.IsLittleEndian) Array.Reverse(header); // 转换为小端法
-            socket.SendAllBytes(header);
-
-            // send body
-            socket.SendAllBytes(data, offset, size);
+            socket.Send(
+                new List<ArraySegment<byte>>() 
+                { 
+                    new ArraySegment<byte>(header), 
+                    new ArraySegment<byte>(data) 
+                });
         }
 
         public static byte[] ReceivePack(this Socket socket)
@@ -72,15 +76,21 @@ namespace ZGRemote.Common.Extensions
             return body;
         }
 
+        #region SendAllBytes
+
+        // If you're using a connection-oriented protocol, Send will block until all of the bytes in the buffer are sent, unless a time-out was set by using Socket.SendTimeout.
+        // from https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.socket.send?view=net-8.0
+        // so remove the method SendAllBytes
+
         /// <summary>
         /// 发送所有buffer字节数据
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="buffer">类型 Byte 的数组，其中包含要发送的数据。</param>
-        public static void SendAllBytes(this Socket socket, byte[] buffer)
-        {
-            socket.SendAllBytes(buffer, 0, buffer.Length);
-        }
+        //public static void SendAllBytes(this Socket socket, byte[] buffer)
+        //{
+        //    socket.SendAllBytes(buffer, 0, buffer.Length);
+        //}
 
         /// <summary>
         /// 发送所有指定字节数据
@@ -89,15 +99,15 @@ namespace ZGRemote.Common.Extensions
         /// <param name="buffer">类型 Byte 的数组，其中包含要发送的数据。</param>
         /// <param name="offset">开始发送数据的缓冲区中的位置。</param>
         /// <param name="size">要发送的字节数。</param>
-        public static void SendAllBytes(this Socket socket, byte[] buffer, int offset, int size)
-        {
-            int sendCount = 0;
-            while (sendCount < size)
-            {
-                sendCount += socket.Send(buffer, offset + sendCount, size - sendCount, SocketFlags.None);
-            }
-        }
-
+        //public static void SendAllBytes(this Socket socket, byte[] buffer, int offset, int size)
+        //{
+        //    int sendCount = 0;
+        //    while (sendCount < size)
+        //    {
+        //        sendCount += socket.Send(buffer, offset + sendCount, size - sendCount, SocketFlags.None);
+        //    }
+        //}
+        #endregion
 
         public static Task<int> ReceiveAsync(this Socket socket, Memory<byte> memory, SocketFlags socketFlags)
         {

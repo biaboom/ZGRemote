@@ -36,22 +36,53 @@ namespace ZGRemote.Client
             ZGClient client = new ZGClient(Settings.RSACSPBLOB);
             client.Connect += OnConnect;
             client.Receive += OnReceive;
-            int i = 0;
-            while(!client.ConnectServer() && i <= 60)
+            client.DisConnect += OnDisconnect;
+
+            while (true) 
             {
-                i++;
+                Log.Information(client.Connected.ToString());
+                if (client.Connected == false)
+                {
+                    try
+                    {
+                        client.ConnectServer();
+                    }
+                    catch (Exception ex)
+                    {
+                        client.Connect -= OnConnect;
+                        client.Receive -= OnReceive;
+                        client.DisConnect -= OnDisconnect;
+
+                        client = new ZGClient(Settings.RSACSPBLOB);
+                        client.Connect += OnConnect;
+                        client.Receive += OnReceive;
+                        client.DisConnect += OnDisconnect;
+                    }
+                }
                 Thread.Sleep(1000);
             }
-            if(client.Connected == false)
-            {
-                Application.Exit();
-            }
+
+            //int i = 0;
+            //while(!client.ConnectServer() && i <= 60)
+            //{
+            //    i++;
+            //    Thread.Sleep(1000);
+            //}
+            //if(client.Connected == false)
+            //{
+            //    Application.Exit();
+            //}
 
         }
 
         static void OnConnect(UserContext user)
         {
             HandlerProcessor.CreateAllDelegateHandlerInstanceByUserContext(user);
+        }
+
+        static void OnDisconnect(UserContext user)
+        {
+            HandlerProcessor.ReleaseAllDelegateHandlerInstanceByUserContext(user);
         }
 
         static void OnReceive(UserContext user, byte[] data)
