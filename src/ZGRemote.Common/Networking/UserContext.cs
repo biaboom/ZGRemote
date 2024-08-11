@@ -81,21 +81,23 @@ namespace ZGRemote.Common.Networking
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (disposedValue) return;
+            if (disposing)
             {
-                Socket = null;
                 Server = null;
-                ConnectTime = DateTime.MinValue;
                 AesEncryptor.Dispose();
                 AesDecryptor.Dispose();
-                disposedValue = true;
             }
+            Socket.Dispose();
+            Socket = null;
+            disposedValue = true;
         }
+
+        ~UserContext() { Dispose(false); }
 
         public void Dispose()
         {
-            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
-            Dispose(disposing: true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
     }

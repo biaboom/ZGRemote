@@ -14,7 +14,7 @@ namespace ZGRemote.Server.UI
     /// </summary>
     public partial class App : Application
     {
-        public MainViewModel MainViewModel {  get; set; }
+        public MainViewModel MainViewModel { get; private set; }
 
         public static new App Current => (App)Application.Current;
 
@@ -35,8 +35,7 @@ namespace ZGRemote.Server.UI
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.DataContext = MainViewModel;
+            MainWindow mainWindow = new MainWindow(MainViewModel);
             mainWindow.Show();
 
         }

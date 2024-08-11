@@ -1,4 +1,5 @@
 ﻿using HandyControl.Interactivity;
+using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,25 +20,64 @@ namespace ZGRemote.Server.UI
     /// </summary>
     public partial class MainWindow : HandyControl.Controls.Window
     {
-        public MainWindow()
+        private MainViewModel mainViewModel;
+        public MainWindow(MainViewModel viewModel)
         {
             InitializeComponent();
+            mainViewModel = viewModel;
+            DataContext = viewModel;
+            mainViewModel.RemoteViewModelList.CollectionChanged += RemoteViewModels_CollectionChanged;
         }
 
-        private void MemuView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void RemoteViewModels_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            Console.WriteLine();
+            if (e.Action == NotifyCollectionChangedAction.Add) 
+            { 
+                foreach(ViewModelBase item in e.NewItems! )
+                {
+                    MemuViewItem memuItem = new MemuViewItem();
+                    memuItem.HasClose = true;
+                    memuItem.Header = item.Header;
+                    memuItem.DataContext = item;
+
+                    var binding = new Binding("IsSelected");
+                    binding.Source = item;
+                    memuItem.SetBinding(MemuViewItem.IsSelectedProperty, binding);
+
+                    RemoteItem.Items.Add(memuItem);
+                }
+            }else if(e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ViewModelBase viewModel in e.OldItems!)
+                {
+                    MemuViewItem? memuViewItem = null;
+                    foreach (MemuViewItem item in RemoteItem.Items)
+                    {
+                        if (item.DataContext == viewModel)
+                        {
+                            memuViewItem = item;
+                            break;
+                        }
+                    }
+                    if (memuViewItem != null) RemoteItem.Items.Remove(memuViewItem);
+                }
+            }
         }
 
-        private void MemuView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void RemoteItem_CloseButtonClick(object sender, RoutedEventArgs e)
         {
 
+            if (((MemuViewItem)e.Source).DataContext is ViewModelBase viewModel)
+            {
+                mainViewModel.RemoveRemoteViewModelCommand.Execute(viewModel);
+            }
         }
+
     }
 
     public class MemuSelectChangeEventArgsToViewModelConverter : IEventArgsConverter
     {
-        public object Convert(object value, object parameter)
+        public object? Convert(object value, object parameter)
         {
             if (value is RoutedPropertyChangedEventArgs<object> e)
             {

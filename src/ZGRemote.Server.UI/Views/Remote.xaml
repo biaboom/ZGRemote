@@ -10,14 +10,24 @@
              d:DataContext="{d:DesignInstance vm:RemoteViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <ListView ItemsSource="{Binding Users}" Background="White" BorderBrush="Transparent">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Name="MenuItem1" Header="文件" />
+        <ListView SelectedItem="{Binding SelectUser}" ItemsSource="{Binding Users}" Background="White" BorderBrush="Transparent">
+            <ListView.Resources>
+                <ContextMenu x:Key="ListViewItemContextMenu" Width="200" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:Remote}, Path=DataContext}">
+                    <MenuItem Name="OpenRemoteShell" Header="打开远程终端" 
+                              Command="{Binding OpenRemoteShellCommand}"/>
                 </ContextMenu>
-            </ListView.ContextMenu>
+            </ListView.Resources>
+            <ListView.ItemContainerStyle>
+                
+                <Style BasedOn="{StaticResource ListViewItemBaseStyle}" TargetType="ListViewItem">
+
+                    <Setter Property="ContextMenu" Value="{StaticResource ListViewItemContextMenu}"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
+            
                 <GridView>
+                    
                     <GridViewColumn Width="80" Header=" Name" DisplayMemberBinding="{Binding Name}"/>
                     <GridViewColumn Width="80" Header=" IP" DisplayMemberBinding="{Binding IP}"/>
                     <GridViewColumn Width="60" Header=" Port" DisplayMemberBinding="{Binding Port}"/>

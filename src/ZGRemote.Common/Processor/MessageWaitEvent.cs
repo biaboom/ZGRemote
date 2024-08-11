@@ -10,7 +10,7 @@ namespace ZGRemote.Common.Processor
     {
         private AutoResetEvent autoEvent;
 
-        const int millisecondsTimeout = 60 * 1000;
+        const int millisecondsTimeout = 15 * 1000;
 
         protected bool disposedValue;
 

@@ -23,21 +23,21 @@
         </Grid.ColumnDefinitions>
         <hc:SimplePanel Grid.Column="0" >
             <lc:MemuView BorderBrush="Transparent" Background="WhiteSmoke" Width="190">
-                <lc:MemuView.ItemContainerStyle>
+                <!--<lc:MemuView.ItemContainerStyle>
                     <Style BasedOn="{StaticResource MemuViewItemBaseStyle}" TargetType="lc:MemuViewItem">
                         <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                     </Style>
-                </lc:MemuView.ItemContainerStyle>
+                </lc:MemuView.ItemContainerStyle>-->
                 <hc:Interaction.Triggers>
                     <hc:EventTrigger EventName="SelectedItemChanged">
                         <hc:EventToCommand Command="{Binding NavigateCommand}" PassEventArgsToCommand="True" EventArgsConverter="{StaticResource memuSelectChangeEventArgsToViewModelConverter}" ></hc:EventToCommand>
                     </hc:EventTrigger>
                 </hc:Interaction.Triggers>
-                <lc:MemuViewItem DataContext="{Binding HomeViewModel}" Header="Home"/>
-                <lc:MemuViewItem DataContext="{Binding RemoteViewModel}" Header="Remote"/>
-                <lc:MemuViewItem DataContext="{Binding BuilderViewModel}" Header="Builder"/>
-                <lc:MemuViewItem DataContext="{Binding SettingsViewModel}" Header="Settings"/>
-                
+                <lc:MemuViewItem IsSelected="{Binding IsSelected}" DataContext="{Binding HomeViewModel}" Header="Home"/>
+                <lc:MemuViewItem x:Name="RemoteItem" IsSelected="{Binding IsSelected}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}" CloseButtonClick="RemoteItem_CloseButtonClick" DataContext="{Binding RemoteViewModel}" Header="Remote">
+                </lc:MemuViewItem>
+                <lc:MemuViewItem IsSelected="{Binding IsSelected}" DataContext="{Binding BuilderViewModel}" Header="Builder"/>
+                <lc:MemuViewItem IsSelected="{Binding IsSelected}" DataContext="{Binding SettingsViewModel}" Header="Settings"/>
             </lc:MemuView>
         </hc:SimplePanel>
         <Border Grid.Column="1" CornerRadius="7,0,0,0" Margin="5,5,0,0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="White" Padding="1">
@@ -54,6 +54,9 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
                         <v:Settings/>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:RemoteShellViewModel}">
+                        <v:RemoteShell/>
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>

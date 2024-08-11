@@ -11,5 +11,10 @@ namespace ZGRemote.Server.UI.ViewModels
     {
         [ObservableProperty]
         private string header = "Home";
+
+        public HomeViewModel()
+        {
+            IsSelected = true;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,28 +26,41 @@ namespace ZGRemote.Server.UI.ViewModels
         [ObservableProperty]
         private ViewModelBase currentViewModel;
 
+        public ObservableCollection<RemoteViewModelBase> RemoteViewModelList;
+
         public MainViewModel()
         {
             homeViewModel = new HomeViewModel();
             remoteViewModel = new RemoteViewModel();
             builderViewModel = new BuilderViewModel();
             settingsViewModel = new SettingsViewModel();
-            currentViewModel = RemoteViewModel;
+            NavigateTo(RemoteViewModel);
+            RemoteViewModelList = new ObservableCollection<RemoteViewModelBase>();
         }
 
         [RelayCommand]
-        public void Navigate(object viewModel)
+        private void Navigate(object viewModel)
         {
             if(viewModel is ViewModelBase vm)
             {
-                CurrentViewModel = vm;
+                NavigateTo(vm);
+            }
+        }
+
+        public void NavigateTo(ViewModelBase viewModel)
+        {
+            if (CurrentViewModel != viewModel) 
+            { 
+                CurrentViewModel = viewModel; 
+                viewModel.IsSelected = true;
             }
         }
 
         [RelayCommand]
-        public void Test()
+        private void RemoveRemoteViewModel(RemoteViewModelBase viewModel)
         {
-            SettingsViewModel.IsSelected = true;
+            RemoteViewModelList.Remove(viewModel);
+            viewModel.Dispose();
         }
     }
 }
